@@ -44,10 +44,11 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init("/usr/share/awesome/themes/default/theme.lua")
+beautiful.init("/usr/share/awesome/themes/zenburn/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm"
+browser = os.getenv("BROWSER") or "chromium"
+terminal = "terminator"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -61,12 +62,12 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
+    awful.layout.suit.fair,
     awful.layout.suit.floating,
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
     awful.layout.suit.spiral,
     awful.layout.suit.spiral.dwindle,
@@ -83,71 +84,89 @@ tyrannical.tags = {
         init        = true,                   -- Load the tag on startup
         exclusive   = true,                   -- Refuse any other type of clients (by classes)
         screen      = {1,2},                  -- Create this tag on screen 1 and screen 2
-        layout      = awful.layout.suit.tile, -- Use the tile layout
+        exec_once   = {terminal, terminal, terminal, terminal},
+        layout      = awful.layout.suit.fair, -- Use the tile layout
         class       = { --Accept the following classes, refuse everything else (because of "exclusive=true")
             "xterm" , "urxvt" , "aterm","URxvt","XTerm","konsole","terminator","gnome-terminal"
         }
-    } ,
+    } ,   
     {
         name        = "Internet",
         init        = true,
         exclusive   = true,
+        exec_once   = browser,
       --icon        = "~net.png",                 -- Use this icon for the tag (uncomment with a real path)
-        screen      = screen.count()>1 and 2 or 1,-- Setup on screen 2 if there is more than 1 screen, else on screen 1
+        screen      = 1,-- Setup on screen 2 if there is more than 1 screen, else on screen 1
         layout      = awful.layout.suit.max,      -- Use the max layout
         class = {
             "Opera"         , "Firefox"        , "Rekonq"    , "Dillo"        , "Arora",
             "Chromium"      , "nightly"        , "minefield"     }
     } ,
     {
-        name = "Files",
-        init        = true,
-        exclusive   = true,
-        screen      = 1,
-        layout      = awful.layout.suit.tile,
-        exec_once   = {"dolphin"}, --When the tag is accessed for the first time, execute this command
-        class  = {
-            "Thunar", "Konqueror", "Dolphin", "ark", "Nautilus","emelfm"
-        }
-    } ,
-    {
         name = "Develop",
         init        = true,
         exclusive   = true,
         screen      = 1,
-        clone_on    = 2, -- Create a single instance of this tag on screen 1, but also show it on screen 2
-                         -- The tag can be used on both screen, but only one at once
+        exec_once   = "sublime_text",
         layout      = awful.layout.suit.max                          ,
-        class ={ 
-            "Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
+        class = { 
+            "sublime_text","Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
     } ,
+    {
+        name        = "Media",
+        init        = true, -- This tag wont be created at startup, but will be when one of the
+                             -- client in the "class" section will start. It will be created on
+                             -- the client startup screen
+        exclusive   = true,
+        exec_once   = {"sonata", "skype"},
+        screen   = 1,
+        layout      = awful.layout.suit.floating,
+        class       = {
+            "sonata"     , "skype",                                       
+          }
+    } ,    
     {
         name        = "Doc",
         init        = false, -- This tag wont be created at startup, but will be when one of the
                              -- client in the "class" section will start. It will be created on
                              -- the client startup screen
         exclusive   = true,
+        screen      = 1,
         layout      = awful.layout.suit.max,
         class       = {
             "Assistant"     , "Okular"         , "Evince"    , "EPDFviewer"   , "xpdf",
             "Xpdf"          ,                                        }
     } ,
+    {
+        name        = "DevTools",
+        init        = true, -- This tag wont be created at startup, but will be when one of the
+                             -- client in the "class" section will start. It will be created on
+                             -- the client startup screen
+        exclusive   = false,
+        screen      = 2,
+        layout      = awful.layout.suit.max,
+        class       = { },
+    } ,
+    {
+        name = "Files",
+        init        = true,
+        exclusive   = true,
+        screen      = 2,
+        layout      = awful.layout.suit.tile,
+        exec_once   = {"dolphin"}, --When the tag is accessed for the first time, execute this command
+        class  = {
+            "Thunar", "Konqueror", "Dolphin", "ark", "Nautilus","emelfm"
+        }
+    },
 }
 
 -- Ignore the tag "exclusive" property for the following clients (matched by classes)
 tyrannical.properties.intrusive = {
-    "ksnapshot"     , "pinentry"       , "gtksu"     , "kcalc"        , "xcalc"               ,
-    "feh"           , "Gradient editor", "About KDE" , "Paste Special", "Background color"    ,
-    "kcolorchooser" , "plasmoidviewer" , "Xephyr"    , "kruler"       , "plasmaengineexplorer",
+    
 }
 
 -- Ignore the tiled layout for the matching clients
-tyrannical.properties.floating = {
-    "MPlayer"      , "pinentry"        , "ksnapshot"  , "pinentry"     , "gtksu"          ,
-    "xine"         , "feh"             , "kmix"       , "kcalc"        , "xcalc"          ,
-    "yakuake"      , "Select Color$"   , "kruler"     , "kcolorchooser", "Paste Special"  ,
-    "New Form"     , "Insert Picture"  , "kcharselect", "mythfrontend" , "plasmoidviewer" 
-}
+tyrannical.properties.floating = { }
 
 -- Make the matching clients (by classes) on top of the default layout
 tyrannical.properties.ontop = {
