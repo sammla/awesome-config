@@ -1,3 +1,9 @@
+-- Coment this out if you dont need to test it this way
+-- Remove last dir
+local pwd = os.getenv("PWD"):match("(.+)/.-")
+package.path = pwd .. "/?.lua;" .. pwd .. "/?/init.lua;" .. package.path
+local tyrannical = require("tyrannical")
+
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -38,10 +44,10 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init("/usr/share/awesome/themes/zenburn/theme.lua")
+beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "terminator"
+terminal = "xterm"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -70,6 +76,92 @@ local layouts =
 }
 -- }}}
 
+
+tyrannical.tags = {
+    {
+        name        = "Term",                 -- Call the tag "Term"
+        init        = true,                   -- Load the tag on startup
+        exclusive   = true,                   -- Refuse any other type of clients (by classes)
+        screen      = {1,2},                  -- Create this tag on screen 1 and screen 2
+        layout      = awful.layout.suit.tile, -- Use the tile layout
+        class       = { --Accept the following classes, refuse everything else (because of "exclusive=true")
+            "xterm" , "urxvt" , "aterm","URxvt","XTerm","konsole","terminator","gnome-terminal"
+        }
+    } ,
+    {
+        name        = "Internet",
+        init        = true,
+        exclusive   = true,
+      --icon        = "~net.png",                 -- Use this icon for the tag (uncomment with a real path)
+        screen      = screen.count()>1 and 2 or 1,-- Setup on screen 2 if there is more than 1 screen, else on screen 1
+        layout      = awful.layout.suit.max,      -- Use the max layout
+        class = {
+            "Opera"         , "Firefox"        , "Rekonq"    , "Dillo"        , "Arora",
+            "Chromium"      , "nightly"        , "minefield"     }
+    } ,
+    {
+        name = "Files",
+        init        = true,
+        exclusive   = true,
+        screen      = 1,
+        layout      = awful.layout.suit.tile,
+        exec_once   = {"dolphin"}, --When the tag is accessed for the first time, execute this command
+        class  = {
+            "Thunar", "Konqueror", "Dolphin", "ark", "Nautilus","emelfm"
+        }
+    } ,
+    {
+        name = "Develop",
+        init        = true,
+        exclusive   = true,
+        screen      = 1,
+        clone_on    = 2, -- Create a single instance of this tag on screen 1, but also show it on screen 2
+                         -- The tag can be used on both screen, but only one at once
+        layout      = awful.layout.suit.max                          ,
+        class ={ 
+            "Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
+    } ,
+    {
+        name        = "Doc",
+        init        = false, -- This tag wont be created at startup, but will be when one of the
+                             -- client in the "class" section will start. It will be created on
+                             -- the client startup screen
+        exclusive   = true,
+        layout      = awful.layout.suit.max,
+        class       = {
+            "Assistant"     , "Okular"         , "Evince"    , "EPDFviewer"   , "xpdf",
+            "Xpdf"          ,                                        }
+    } ,
+}
+
+-- Ignore the tag "exclusive" property for the following clients (matched by classes)
+tyrannical.properties.intrusive = {
+    "ksnapshot"     , "pinentry"       , "gtksu"     , "kcalc"        , "xcalc"               ,
+    "feh"           , "Gradient editor", "About KDE" , "Paste Special", "Background color"    ,
+    "kcolorchooser" , "plasmoidviewer" , "Xephyr"    , "kruler"       , "plasmaengineexplorer",
+}
+
+-- Ignore the tiled layout for the matching clients
+tyrannical.properties.floating = {
+    "MPlayer"      , "pinentry"        , "ksnapshot"  , "pinentry"     , "gtksu"          ,
+    "xine"         , "feh"             , "kmix"       , "kcalc"        , "xcalc"          ,
+    "yakuake"      , "Select Color$"   , "kruler"     , "kcolorchooser", "Paste Special"  ,
+    "New Form"     , "Insert Picture"  , "kcharselect", "mythfrontend" , "plasmoidviewer" 
+}
+
+-- Make the matching clients (by classes) on top of the default layout
+tyrannical.properties.ontop = {
+    "Xephyr"       , "ksnapshot"       , "kruler"
+}
+
+-- Force the matching clients (by classes) to be centered on the screen on init
+tyrannical.properties.centered = {
+    "kcalc"
+}
+
+tyrannical.properties.size_hints_honor = { xterm = false, URxvt = false, aterm = false, sauer_client = false, mythfrontend  = false}
+
+
 -- {{{ Wallpaper
 if beautiful.wallpaper then
     for s = 1, screen.count() do
@@ -78,13 +170,6 @@ if beautiful.wallpaper then
 end
 -- }}}
 
--- {{{ Tags
--- Define a tag table which hold all screen tags.
-tags = {}
-for s = 1, screen.count() do
-    -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[6])
-end
 -- }}}
 
 -- {{{ Menu
@@ -135,7 +220,7 @@ mytasklist.buttons = awful.util.table.join(
                                                   -- :isvisible() makes no sense
                                                   c.minimized = false
                                                   if not c:isvisible() then
-                                                      awful.tag.viewonly(c:tags()[1])
+                                                       awful.tag.viewonly(c:tags()[1])
                                                   end
                                                   -- This will also un-minimize
                                                   -- the client, if needed
@@ -292,41 +377,39 @@ clientkeys = awful.util.table.join(
         end)
 )
 
--- Compute the maximum number of digit we need, limited to 9
-keynumber = 0
-for s = 1, screen.count() do
-   keynumber = math.min(9, math.max(#tags[s], keynumber))
-end
-
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
-for i = 1, keynumber do
+for i = 1, 9 do
     globalkeys = awful.util.table.join(globalkeys,
         awful.key({ modkey }, "#" .. i + 9,
                   function ()
                         local screen = mouse.screen
-                        if tags[screen][i] then
-                            awful.tag.viewonly(tags[screen][i])
+                        local tag = awful.tag.gettags(screen)[i]
+                        if tag then
+                           awful.tag.viewonly(tag)
                         end
                   end),
         awful.key({ modkey, "Control" }, "#" .. i + 9,
                   function ()
                       local screen = mouse.screen
-                      if tags[screen][i] then
-                          awful.tag.viewtoggle(tags[screen][i])
+                      local tag = awful.tag.gettags(screen)[i]
+                      if tag then
+                         awful.tag.viewtoggle(tag)
                       end
                   end),
         awful.key({ modkey, "Shift" }, "#" .. i + 9,
                   function ()
-                      if client.focus and tags[client.focus.screen][i] then
-                          awful.client.movetotag(tags[client.focus.screen][i])
-                      end
+                      local tag = awful.tag.gettags(client.focus.screen)[i]
+                      if client.focus and tag then
+                          awful.client.movetotag(tag)
+                     end
                   end),
         awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
                   function ()
-                      if client.focus and tags[client.focus.screen][i] then
-                          awful.client.toggletag(tags[client.focus.screen][i])
+                      local tag = awful.tag.gettags(client.focus.screen)[i]
+                      if client.focus and tag then
+                          awful.client.toggletag(tag)
                       end
                   end))
 end
