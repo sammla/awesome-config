@@ -84,7 +84,8 @@ tyrannical.tags = {
         init        = true,                   -- Load the tag on startup
         exclusive   = true,                   -- Refuse any other type of clients (by classes)
         screen      = {1,2},                  -- Create this tag on screen 1 and screen 2
-        exec_once   = {terminal, terminal, terminal, terminal},
+        exec_once   = {terminal, terminal},
+        selected    = true,
         layout      = awful.layout.suit.fair, -- Use the tile layout
         class       = { --Accept the following classes, refuse everything else (because of "exclusive=true")
             "xterm" , "urxvt" , "aterm","URxvt","XTerm","konsole","terminator","gnome-terminal"
@@ -93,14 +94,15 @@ tyrannical.tags = {
     {
         name        = "Internet",
         init        = true,
-        exclusive   = true,
+        exclusive   = false,
         exec_once   = browser,
+        -- selected    = true,
       --icon        = "~net.png",                 -- Use this icon for the tag (uncomment with a real path)
-        screen      = 1,-- Setup on screen 2 if there is more than 1 screen, else on screen 1
+        screen      = {1,2},-- Setup on screen 2 if there is more than 1 screen, else on screen 1
         layout      = awful.layout.suit.max,      -- Use the max layout
         class = {
             "Opera"         , "Firefox"        , "Rekonq"    , "Dillo"        , "Arora",
-            "Chromium"      , "nightly"        , "minefield"     }
+            "Chromium"      , "nightly"        , "minefield", "Google-chrome"     }
     } ,
     {
         name = "Develop",
@@ -110,7 +112,7 @@ tyrannical.tags = {
         exec_once   = "sublime_text",
         layout      = awful.layout.suit.max                          ,
         class = { 
-            "sublime_text","Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
+            "sublime_text", "sublime-text" ,"Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
     } ,
     {
         name        = "Media",
@@ -120,7 +122,7 @@ tyrannical.tags = {
         exclusive   = true,
         exec_once   = {"sonata", "skype"},
         screen   = 1,
-        layout      = awful.layout.suit.floating,
+        layout      = awful.layout.suit.fair,
         class       = {
             "sonata"     , "skype",                                       
           }
@@ -136,16 +138,6 @@ tyrannical.tags = {
         class       = {
             "Assistant"     , "Okular"         , "Evince"    , "EPDFviewer"   , "xpdf",
             "Xpdf"          ,                                        }
-    } ,
-    {
-        name        = "DevTools",
-        init        = true, -- This tag wont be created at startup, but will be when one of the
-                             -- client in the "class" section will start. It will be created on
-                             -- the client startup screen
-        exclusive   = false,
-        screen      = 2,
-        layout      = awful.layout.suit.max,
-        class       = { },
     } ,
     {
         name = "Files",
