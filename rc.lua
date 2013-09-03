@@ -94,7 +94,7 @@ tyrannical.tags = {
     {
         name        = "Internet",
         init        = true,
-        exclusive   = false,
+        exclusive   = true,
         exec_once   = browser,
         -- selected    = true,
       --icon        = "~net.png",                 -- Use this icon for the tag (uncomment with a real path)
@@ -109,19 +109,17 @@ tyrannical.tags = {
         init        = true,
         exclusive   = true,
         screen      = 1,
-        exec_once   = "sublime_text",
+        exec_once   = "subl",
         layout      = awful.layout.suit.max                          ,
         class = { 
             "sublime_text", "sublime-text" ,"Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
     } ,
     {
         name        = "Media",
-        init        = true, -- This tag wont be created at startup, but will be when one of the
-                             -- client in the "class" section will start. It will be created on
-                             -- the client startup screen
+        init        = true,
         exclusive   = true,
         exec_once   = {"sonata", "skype"},
-        screen   = 1,
+        screen      = 2,
         layout      = awful.layout.suit.fair,
         class       = {
             "sonata"     , "skype",                                       
@@ -129,9 +127,7 @@ tyrannical.tags = {
     } ,    
     {
         name        = "Doc",
-        init        = false, -- This tag wont be created at startup, but will be when one of the
-                             -- client in the "class" section will start. It will be created on
-                             -- the client startup screen
+        init        = false,
         exclusive   = true,
         screen      = 1,
         layout      = awful.layout.suit.max,
@@ -520,3 +516,5 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
+
+awful.util.spawn_with_shell("nitrogen --restore")
