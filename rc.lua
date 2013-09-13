@@ -83,7 +83,7 @@ tyrannical.tags = {
         name        = "Term",                 -- Call the tag "Term"
         init        = true,                   -- Load the tag on startup
         exclusive   = true,                   -- Refuse any other type of clients (by classes)
-        screen      = {1,2},                  -- Create this tag on screen 1 and screen 2
+        screen      = 1,                  -- Create this tag on screen 1 and screen 2
         exec_once   = {terminal, terminal},
         selected    = true,
         layout      = awful.layout.suit.fair, -- Use the tile layout
@@ -98,7 +98,7 @@ tyrannical.tags = {
         exec_once   = browser,
         -- selected    = true,
       --icon        = "~net.png",                 -- Use this icon for the tag (uncomment with a real path)
-        screen      = {1,2},-- Setup on screen 2 if there is more than 1 screen, else on screen 1
+        screen      = 1,-- Setup on screen 2 if there is more than 1 screen, else on screen 1
         layout      = awful.layout.suit.max,      -- Use the max layout
         class = {
             "Opera"         , "Firefox"        , "Rekonq"    , "Dillo"        , "Arora",
@@ -114,38 +114,38 @@ tyrannical.tags = {
         class = { 
             "sublime_text", "sublime-text" ,"Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
     } ,
-    {
-        name        = "Media",
-        init        = true,
-        exclusive   = true,
-        exec_once   = {"sonata", "skype"},
-        screen      = 2,
-        layout      = awful.layout.suit.fair,
-        class       = {
-            "sonata"     , "skype",                                       
-          }
-    } ,    
-    {
-        name        = "Doc",
-        init        = false,
-        exclusive   = true,
-        screen      = 1,
-        layout      = awful.layout.suit.max,
-        class       = {
-            "Assistant"     , "Okular"         , "Evince"    , "EPDFviewer"   , "xpdf",
-            "Xpdf"          ,                                        }
-    } ,
-    {
-        name = "Files",
-        init        = true,
-        exclusive   = true,
-        screen      = 2,
-        layout      = awful.layout.suit.tile,
-        exec_once   = {"dolphin"}, --When the tag is accessed for the first time, execute this command
-        class  = {
-            "Thunar", "Konqueror", "Dolphin", "ark", "Nautilus","emelfm"
-        }
-    },
+    -- {
+    --     name        = "Media",
+    --     init        = true,
+    --     exclusive   = true,
+    --     exec_once   = {"sonata", "skype"},
+    --     screen      = 2,
+    --     layout      = awful.layout.suit.fair,
+    --     class       = {
+    --         "sonata"     , "skype",                                       
+    --       }
+    -- } ,    
+    -- {
+    --     name        = "Doc",
+    --     init        = false,
+    --     exclusive   = true,
+    --     screen      = 1,
+    --     layout      = awful.layout.suit.max,
+    --     class       = {
+    --         "Assistant"     , "Okular"         , "Evince"    , "EPDFviewer"   , "xpdf",
+    --         "Xpdf"          ,                                        }
+    -- } ,
+    -- {
+    --     name = "Files",
+    --     init        = true,
+    --     exclusive   = true,
+    --     screen      = 2,
+    --     layout      = awful.layout.suit.tile,
+    --     exec_once   = {"dolphin"}, --When the tag is accessed for the first time, execute this command
+    --     class  = {
+    --         "Thunar", "Konqueror", "Dolphin", "ark", "Nautilus","emelfm"
+    --     }
+    -- },
 }
 
 -- Ignore the tag "exclusive" property for the following clients (matched by classes)
