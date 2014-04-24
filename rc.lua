@@ -91,7 +91,7 @@ tyrannical.tags = {
         class       = { --Accept the following classes, refuse everything else (because of "exclusive=true")
             "xterm" , "urxvt" , "aterm","URxvt","XTerm","konsole","terminator","gnome-terminal"
         }
-    } ,   
+    } ,
     {
         name        = "Internet",
         init        = true,
@@ -112,46 +112,41 @@ tyrannical.tags = {
         screen      = 1,
         exec_once   = "subl",
         layout      = awful.layout.suit.max                          ,
-        class = { 
+        class = {
             "sublime_text", "sublime-text" ,"Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
     } ,
-    -- {
-    --     name        = "Media",
-    --     init        = true,
-    --     exclusive   = true,
-    --     exec_once   = {"sonata", "skype"},
-    --     screen      = 2,
-    --     layout      = awful.layout.suit.fair,
-    --     class       = {
-    --         "sonata"     , "skype",                                       
-    --       }
-    -- } ,    
-    -- {
-    --     name        = "Doc",
-    --     init        = false,
-    --     exclusive   = true,
-    --     screen      = 1,
-    --     layout      = awful.layout.suit.max,
-    --     class       = {
-    --         "Assistant"     , "Okular"         , "Evince"    , "EPDFviewer"   , "xpdf",
-    --         "Xpdf"          ,                                        }
-    -- } ,
-    -- {
-    --     name = "Files",
-    --     init        = true,
-    --     exclusive   = true,
-    --     screen      = 2,
-    --     layout      = awful.layout.suit.tile,
-    --     exec_once   = {"dolphin"}, --When the tag is accessed for the first time, execute this command
-    --     class  = {
-    --         "Thunar", "Konqueror", "Dolphin", "ark", "Nautilus","emelfm"
-    --     }
-    -- },
+    {
+        name        = "TS",                 -- Call the tag "Term"
+        init        = true,                   -- Load the tag on startup
+        -- exclusive   = true,                   -- Refuse any other type of clients (by classes)
+        screen      = 1,                  -- Create this tag on screen 1 and screen 2
+        layout      = awful.layout.suit.fair, -- Use the tile layout
+        -- class       = { --Accept the following classes, refuse everything else (because of "exclusive=true")
+        --     "xterm" , "urxvt" , "aterm","URxvt","XTerm","konsole","terminator","gnome-terminal"
+        -- }
+    } ,
+    {
+        name        = "Float",                 -- Call the tag "Term"
+        init        = true,                   -- Load the tag on startup
+        -- exclusive   = true,                   -- Refuse any other type of clients (by classes)
+        screen      = 1,                  -- Create this tag on screen 1 and screen 2
+        layout      = awful.layout.suit.floating, -- Use the tile layout
+        -- class       = { --Accept the following classes, refuse everything else (because of "exclusive=true")
+        --     "xterm" , "urxvt" , "aterm","URxvt","XTerm","konsole","terminator","gnome-terminal"
+        -- }
+    } ,
+    {
+        name        = "Misc",                 -- Call the tag "Term"
+        init        = false,                   -- Load the tag on startup
+        screen      = 1,                  -- Create this tag on screen 1 and screen 2
+        layout      = awful.layout.suit.fair, -- Use the tile layout
+
+    } ,
 }
 
 -- Ignore the tag "exclusive" property for the following clients (matched by classes)
 tyrannical.properties.intrusive = {
-    
+
 }
 
 -- Ignore the tiled layout for the matching clients
