@@ -50,14 +50,8 @@ beautiful.init("/usr/share/awesome/themes/zenburn/theme.lua")
 -- This is used later as the default terminal and editor to run.
 browser = os.getenv("BROWSER") or "chromium"
 terminal = "terminator"
-editor = os.getenv("EDITOR") or "nano"
+editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
-
--- Default modkey.
--- Usually, Mod4 is the key with a logo between Control and Alt.
--- If you do not like this or do not have such a key,
--- I suggest you to remap Mod4 to another key using xmodmap or other tools.
--- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
@@ -81,14 +75,14 @@ local layouts =
 
 tyrannical.tags = {
     {
-        name        = "Term",                 -- Call the tag "Term"
-        init        = true,                   -- Load the tag on startup
-        exclusive   = true,                   -- Refuse any other type of clients (by classes)
-        screen      = {1, 2},                  -- Create this tag on screen 1 and screen 2
+        name        = "Term",
+        init        = true,
+        exclusive   = true,
+        screen      = {1, 2},
         exec_once   = {terminal, terminal},
         selected    = true,
-        layout      = awful.layout.suit.fair, -- Use the tile layout
-        class       = { --Accept the following classes, refuse everything else (because of "exclusive=true")
+        layout      = awful.layout.suit.fair,
+        class       = {
             "xterm" , "urxvt" , "aterm","URxvt","XTerm","konsole","terminator","gnome-terminal"
         }
     } ,
@@ -97,8 +91,8 @@ tyrannical.tags = {
         init        = true,
         exclusive   = true,
         exec_once   = browser,
-        screen      = 2,
-        layout      = awful.layout.suit.max,      -- Use the max layout
+        screen      = screen.count()>1 and 2 or 1,
+        layout      = awful.layout.suit.max,
         class = {
             "Opera"         , "Firefox"        , "Rekonq"    , "Dillo"        , "Arora",
             "Chromium"      , "nightly"        , "minefield", "Google-chrome"     }
@@ -114,30 +108,11 @@ tyrannical.tags = {
             "sublime_text", "sublime-text" ,"Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
     } ,
     {
-        name        = "TS",                 -- Call the tag "Term"
-        init        = true,                   -- Load the tag on startup
-        -- exclusive   = true,                   -- Refuse any other type of clients (by classes)
-        screen      = 1,                  -- Create this tag on screen 1 and screen 2
-        layout      = awful.layout.suit.fair, -- Use the tile layout
-        -- class       = { --Accept the following classes, refuse everything else (because of "exclusive=true")
-        --     "xterm" , "urxvt" , "aterm","URxvt","XTerm","konsole","terminator","gnome-terminal"
-        -- }
-    } ,
-    {
-        name        = "Float",                 -- Call the tag "Term"
-        init        = true,                   -- Load the tag on startup
-        -- exclusive   = true,                   -- Refuse any other type of clients (by classes)
-        screen      = 1,                  -- Create this tag on screen 1 and screen 2
-        layout      = awful.layout.suit.floating, -- Use the tile layout
-        -- class       = { --Accept the following classes, refuse everything else (because of "exclusive=true")
-        --     "xterm" , "urxvt" , "aterm","URxvt","XTerm","konsole","terminator","gnome-terminal"
-        -- }
-    } ,
-    {
-        name        = "Misc",                 -- Call the tag "Term"
-        init        = false,                   -- Load the tag on startup
-        screen      = 1,                  -- Create this tag on screen 1 and screen 2
-        layout      = awful.layout.suit.fair, -- Use the tile layout
+        name        = "Misc",
+        init        = false,
+        fallback    = true,
+        screen      = screen.count()>1 and 2 or 1,
+        layout      = awful.layout.suit.fair,
 
     } ,
 }
@@ -148,7 +123,12 @@ tyrannical.properties.intrusive = {
 }
 
 -- Ignore the tiled layout for the matching clients
-tyrannical.properties.floating = { }
+tyrannical.properties.floating = {
+    "MPlayer"      , "pinentry"        , "ksnapshot"  , "pinentry"     , "gtksu"          ,
+    "xine"         , "feh"             , "kmix"       , "kcalc"        , "xcalc"          ,
+    "yakuake"      , "Select Color$"   , "kruler"     , "kcolorchooser", "Paste Special"  ,
+    "New Form"     , "Insert Picture"  , "kcharselect", "mythfrontend" , "plasmoidviewer"
+}
 
 -- Make the matching clients (by classes) on top of the default layout
 tyrannical.properties.ontop = {
@@ -161,7 +141,6 @@ tyrannical.properties.centered = {
 }
 
 tyrannical.properties.size_hints_honor = { xterm = false, URxvt = false, aterm = false, sauer_client = false, mythfrontend  = false}
-
 
 -- {{{ Wallpaper
 if beautiful.wallpaper then
