@@ -17,6 +17,8 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local battery = require("battery")
+require("obvious.volume_alsa")
+require("obvious.battery")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -78,8 +80,7 @@ tyrannical.tags = {
         name        = "Term",
         init        = true,
         exclusive   = true,
-        screen      = {1, 2},
-        exec_once   = {terminal, terminal},
+        screen      = screen.count()>1 and 2 or 1,
         selected    = true,
         layout      = awful.layout.suit.fair,
         class       = {
@@ -105,13 +106,13 @@ tyrannical.tags = {
         exec_once   = "subl",
         layout      = awful.layout.suit.max                          ,
         class = {
-            "sublime_text", "sublime-text" ,"Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
+            "sublime_text", "sublime-text", "subl3", "Subl3" ,"Kate", "KDevelop", "Codeblocks", "Code::Blocks" , "DDD", "kate4"}
     } ,
     {
         name        = "Misc",
-        init        = false,
+        init        = true,
         fallback    = true,
-        screen      = screen.count()>1 and 2 or 1,
+        screen      = {1,2},
         layout      = awful.layout.suit.fair,
 
     } ,
@@ -127,7 +128,8 @@ tyrannical.properties.floating = {
     "MPlayer"      , "pinentry"        , "ksnapshot"  , "pinentry"     , "gtksu"          ,
     "xine"         , "feh"             , "kmix"       , "kcalc"        , "xcalc"          ,
     "yakuake"      , "Select Color$"   , "kruler"     , "kcolorchooser", "Paste Special"  ,
-    "New Form"     , "Insert Picture"  , "kcharselect", "mythfrontend" , "plasmoidviewer"
+    "New Form"     , "Insert Picture"  , "kcharselect", "mythfrontend" , "plasmoidviewer" ,
+    "gimp"
 }
 
 -- Make the matching clients (by classes) on top of the default layout
@@ -176,9 +178,8 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- {{{ Wibox
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
-batterywidget = wibox.widget.textbox()
--- batterywidget:set_text("holaR")
--- batterywidget:set_text(batteryInfo("BAT1"))
+batterywidget = obvious.battery()
+volumewidget = obvious.volume_alsa()
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -258,6 +259,7 @@ for s = 1, screen.count() do
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(mytextclock)
+    right_layout:add(volumewidget)
     right_layout:add(batterywidget)
     right_layout:add(mylayoutbox[s])
 
